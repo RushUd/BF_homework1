@@ -1,0 +1,171 @@
+---
+title: "Homework 1"
+output: html_document
+date: "2023-09-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+library(readxl)
+Typical_Employee_Survey_Data <- read_excel("C:/Users/rusha/Downloads/BF/Typical_Employee_Survey_Data.xlsx", 
+    col_names = FALSE)
+View(Typical_Employee_Survey_Data)
+```
+
+
+```{r}
+#changing long name
+whole_data <- Typical_Employee_Survey_Data
+
+```
+
+```{r}
+# Adding header row 
+colnames(whole_data) <-c("A","B","C","D","E","F","G","H","I","J","K")
+
+```
+
+```{r}
+#To print 5-point summary  //minval,Q1,median,Q2,maxval
+# For enitre data use function sapply(tablename, fivenum)
+#For a single column use fivenum(tablename$column)
+sapply(whole_data, fivenum)
+
+fivenum(whole_data$A)
+fivenum(whole_data$B)
+fivenum(whole_data$C)
+fivenum(whole_data$D)
+fivenum(whole_data$E)
+fivenum(whole_data$F)
+fivenum(whole_data$G)
+fivenum(whole_data$H)
+fivenum(whole_data$I)
+fivenum(whole_data$J)
+fivenum(whole_data$K)
+```
+
+```{r}
+#boxplot numerical columns 
+#for entire data boxplot(tablename,main,xlab,ylab)
+#for single column  boxplot(tablename$column,main..)
+boxplot(whole_data,main='As a whole')
+boxplot(whole_data$A,main='Column A Boxplot')
+boxplot(whole_data$B,main='Column B Boxplot')
+boxplot(whole_data$C,main='Column C Boxplot')
+boxplot(whole_data$D,main='Column D Boxplot')
+boxplot(whole_data$E,main='Column E Boxplot')
+boxplot(whole_data$F,main='Column F Boxplot')
+boxplot(whole_data$G,main='Column G Boxplot')
+boxplot(whole_data$H,main='Column H Boxplot')
+boxplot(whole_data$I,main='Column I Boxplot')
+boxplot(whole_data$J,main='Column J Boxplot')
+boxplot(whole_data$K,main='Column K Boxplot')
+```
+
+```{r}
+#To convert numerical to factor  data <- factor(data)
+#To convert single column data$column <- factor(data$column)
+
+#To convert factor to numerical data<- as.numeric(data)
+#For a single column data$column <- as.numeric(data$column)
+
+whole_data$B <- factor(whole_data$B)
+whole_data$H <- factor(whole_data$H)
+```
+
+```{r}
+# plotting right visuals
+# for column A, hist(data$A, breaks,main,xlab,ylab)
+hist(whole_data$A, breaks = 20, main='Age distribution', xlab = 'Age', ylab = 'Frequency')
+```
+
+```{r}
+#for column B, barplot(table(data), main...)
+barplot(table(whole_data$B), main = "Sex Distribution", xlab = "Sex", ylab = "Count")
+barplot(table(whole_data$B), main = "Sex Distribution", xlab = "Sex", ylab = "Count", col = 'Blue')
+custom_colors <- c('Red','Orange','Blue','Yellow')
+barplot(table(whole_data$B), main = "Sex Distribution", xlab = "Sex", ylab = "Count", col = custom_colors)
+
+barplot(table(whole_data$B), main = "Sex Distribution", xlab = "Sex", ylab = "Count", col = custom_colors)
+```
+
+```{r}
+#for column C, barplot or stacked bar
+#job_satisfaction <- c('Very Satisfied','Moderately Satisfied','A little dissatisfies','Very dissatisfied')
+#ggplot(whole_data, aes(x=whole_data$C, fill=factor(job_satisfaction))) + geom_bar(position = "stack") + labs(title = "Job satisfaction distribution by department", x = "Department", y="Count") + scale_fill_discrete(name = "Satifaction Level")
+
+barplot(table(whole_data$C), main="Job satisfaction distribution", xlab = "Satisfaction Level", ylab = "Count")
+```
+
+```{r}
+#for column D
+library(ggplot2)
+ggplot(whole_data, aes(x=factor(whole_data$D), fill=factor(whole_data$D))) + geom_bar() + labs(title = "Job Characteristics distribution", x = "Job characteristics level", y="Count") + theme_minimal()
+
+```
+
+```{r}
+#for column E
+barplot(whole_data$E,main = 'Years worked',xlab = 'Years',ylab='Number of years worked', col=custom_colors)
+
+```
+
+```{r}
+#for column F
+barplot(table(whole_data$F),main = "Promotion likelihood distribution",xlab="Likelihood",ylab = "Count", col=custom_colors)
+
+```
+
+```{r}
+#for column G
+barplot(table(whole_data$G),main = "Affect on work",xlab="Decision" ,ylab = "Count", col='Blue')
+
+```
+
+```{r}
+#for column H
+barplot(table(whole_data$H), main = "Budgetery Decisions", xlab = "Decision", ylab = "Count", col='Pink')
+
+```
+
+```{r}
+#for column I
+#library(vioplot)
+#vioplot(whole_data$I,names = "Pride Level",main = "Pride level distribution",col='Pink')
+hist(whole_data$I,main = "Pride level distribution",xlab="Pride Level",ylab = "Frequency", col='orange')
+```
+
+```{r}
+#for column J
+barplot(table(whole_data$J),main = "Turn Down Job",xlab = "Response",ylab = "Count")
+```
+
+```{r}
+#for column K
+barplot(table(whole_data$K),main = "Workplace Relations",xlab = "Response",ylab = "Count", col=custom_colors)
+
+```
+
+```{r}
+#Relationships
+
+#1 Age vs years worked for particular employer
+work_d <- data.frame(Age=whole_data$A, Years=whole_data$E)
+work_d$f_year <- floor(work_d$Years)
+ggplot(work_d, aes(x=Age, y=f_year))+geom_point()+labs(title = "Years worked", x='Age', y='Years worked for present employer', col='red')
+
+```
+
+```{r}
+#2 Age vs Liklihood of promotion
+promotion <- data.frame(Age=whole_data$A, likely=whole_data$F)
+```
+
